@@ -1,841 +1,1079 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
-
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>1G3 眼镜蛇 Interactive Reading</title>
+<title>1G3 眼镜蛇 Interactive Reading</title>
 
-  <link rel="stylesheet" href="style.css">
+<style>
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "Arial", "Microsoft YaHei", sans-serif;
+  background: #f4f7f5;
+  color: #222;
+  line-height: 1.8;
+}
+
+.container {
+  max-width: 1000px;
+  margin: auto;
+  padding: 30px 20px 60px;
+}
+
+header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+header h1 {
+  font-size: 38px;
+  margin-bottom: 8px;
+}
+
+.subtitle {
+  font-size: 22px;
+  color: #555;
+}
+
+section {
+  background: white;
+  border-radius: 16px;
+  padding: 28px;
+  margin-bottom: 28px;
+  box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+}
+
+h2 {
+  margin-top: 0;
+  color: #333;
+}
+
+/* Reading instructions */
+
+.instruction-box {
+  background: #eef5ff;
+}
+
+.instruction-box li {
+  margin-bottom: 8px;
+}
+
+.primary-btn,
+.paragraph-btn,
+.question-btn,
+.submit-btn {
+  border: none;
+  border-radius: 10px;
+  padding: 10px 18px;
+  cursor: pointer;
+  font-size: 16px;
+  margin-top: 10px;
+}
+
+.primary-btn {
+  background: #2f6fed;
+  color: white;
+}
+
+.paragraph-btn {
+  background: #e7f0ff;
+  color: #2454a6;
+}
+
+.question-btn {
+  background: #fff3cd;
+  color: #795600;
+}
+
+.submit-btn {
+  background: #2f855a;
+  color: white;
+}
+
+button:hover {
+  opacity: 0.85;
+}
+
+.status {
+  font-size: 14px;
+  color: #666;
+}
+
+/* Passage */
+
+.paragraph-card {
+  border: 1px solid #ddd;
+  border-radius: 14px;
+  padding: 22px;
+  margin-bottom: 20px;
+  background: #fff;
+}
+
+.paragraph-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.paragraph-header span {
+  font-weight: bold;
+  font-size: 19px;
+}
+
+.passage {
+  font-size: 19px;
+}
+
+.translation {
+  display: none;
+  margin-top: 15px;
+  padding: 15px;
+  background: #f5f5f5;
+  border-left: 5px solid #6c8cff;
+  border-radius: 8px;
+  color: #444;
+}
+
+/* Word Bank */
+
+.word-bank-section {
+  background: #fffdf4;
+}
+
+.word-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 14px;
+  margin-top: 20px;
+}
+
+.word-card {
+  border: 1px solid #ddd;
+  background: white;
+  border-radius: 12px;
+  padding: 15px;
+  cursor: pointer;
+  text-align: center;
+}
+
+.word-card strong {
+  display: block;
+  font-size: 21px;
+}
+
+.word-card span {
+  color: #777;
+}
+
+.word-display {
+  margin-top: 20px;
+  padding: 20px;
+  background: #f1f7ff;
+  border-radius: 12px;
+  display: none;
+}
+
+/* Questions */
+
+.question-card {
+  border: 1px solid #ddd;
+  border-radius: 14px;
+  padding: 22px;
+  margin-bottom: 20px;
+  background: #fbfffb;
+}
+
+.question-title {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.question-options label {
+  display: block;
+  padding: 8px;
+  cursor: pointer;
+}
+
+.question-options label:hover {
+  background: #f1f5f2;
+  border-radius: 6px;
+}
+
+.attempt-status {
+  font-size: 14px;
+  color: #777;
+  margin-top: 10px;
+}
+
+.feedback {
+  margin-top: 15px;
+  padding: 15px;
+  border-radius: 10px;
+  display: none;
+}
+
+.feedback.correct {
+  display: block;
+  background: #e7f7ed;
+  border-left: 5px solid #2f855a;
+}
+
+.feedback.hint {
+  display: block;
+  background: #fff7df;
+  border-left: 5px solid #e0a800;
+}
+
+.feedback.final {
+  display: block;
+  background: #f2f2f2;
+  border-left: 5px solid #777;
+}
+
+.english-box {
+  display: none;
+  margin-top: 12px;
+  padding: 12px;
+  background: #f5f5f5;
+  border-radius: 8px;
+  color: #555;
+}
+
+.completed {
+  opacity: 0.75;
+}
+
+/* Responsive */
+
+@media (max-width: 700px) {
+  header h1 {
+    font-size: 30px;
+  }
+
+  section {
+    padding: 20px;
+  }
+
+  .paragraph-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+</style>
 </head>
+
 
 <body>
 
 <div class="container">
 
-  <!-- =========================
-       TITLE
-  ========================== -->
+<header>
+  <h1>📖 Interactive Reading</h1>
+  <p class="subtitle">阅读故事：眼镜蛇</p>
+</header>
 
-  <header class="main-header">
 
-    <h1>📖 Interactive Reading</h1>
+<!-- =========================
+     READING INSTRUCTIONS
+========================= -->
 
-    <p class="subtitle">
-      阅读故事：眼镜蛇
-    </p>
+<section class="instruction-box">
 
-  </header>
+<h2>📚 阅读提示</h2>
 
+<ol>
+  <li>请先自己阅读文章。</li>
+  <li>遇到不认识的词语，可以点击词语查看拼音和英文解释。</li>
+  <li>你可以听中文读音，也可以查看英文解释。</li>
+  <li>不需要每一个词都点开。需要帮助时，再使用这些支援。</li>
+</ol>
 
-  <!-- =========================
-       READING INSTRUCTIONS
-  ========================== -->
+<button id="readAllBtn" class="primary-btn">
+🔊 全文朗读
+</button>
 
-  <section class="instruction-box">
+<p id="readingStatus" class="status"></p>
 
-    <h2>📌 阅读提示</h2>
+</section>
 
-    <ol>
 
-      <li>
-        请先自己阅读文章，尝试理解故事内容。
-      </li>
+<!-- =========================
+     PASSAGE
+========================= -->
 
-      <li>
-        遇到不认识的词语，可以点击词语查看帮助。
-      </li>
+<section>
 
-      <li>
-        你可以听中文读音、看拼音和英文解释。
-      </li>
+<h2>📖 阅读文章</h2>
 
-      <li>
-        需要帮助时才使用这些支援。
-      </li>
 
-    </ol>
+<!-- Paragraph 1 -->
 
-    <button
-      id="readAllBtn"
-      class="primary-btn">
+<div class="paragraph-card">
 
-      🔊 全文朗读
+<div class="paragraph-header">
+<span>第一段</span>
 
-    </button>
+<button class="paragraph-btn" onclick="readParagraph(0)">
+🔊 听这一段
+</button>
+</div>
 
-    <p
-      id="readingStatus"
-      class="status">
-    </p>
+<p class="passage">
+一天，有一位太太请客。大家围着桌子坐着，一面吃喝，一面说笑。
+忽然女主人把女佣叫来，低声吩咐了几句话。
+女佣听了脸色发白，急忙跑了出去。
+</p>
 
-  </section>
-
-
-  <!-- =========================
-       PASSAGE
-  ========================== -->
-
-  <section class="passage-section">
-
-    <h2>📖 阅读文章</h2>
-
-
-    <!-- =========================
-         PARAGRAPH 1
-    ========================== -->
-
-    <div class="paragraph-card">
-
-      <div class="paragraph-header">
-
-        <span>第一段</span>
-
-        <button
-          class="paragraph-btn"
-          onclick="readParagraph(0)">
-
-          🔊 听这一段
-
-        </button>
-
-      </div>
-
-
-      <p class="passage">
-
-        一天，有一位太太请客。大家围着桌子坐着，
-        一面吃喝，一面说笑。忽然女主人把女佣叫来，
-        低声吩咐了几句话。女佣听了脸色发白，
-        急忙跑了出去。
-
-      </p>
-
-
-      <div
-        class="translation"
-        id="translation0">
-
-        <strong>English:</strong>
-
-        One day, a lady invited some guests to her home.
-        Everyone sat around the table, eating, drinking and chatting.
-        Suddenly, the hostess called her maid and whispered a few words to her.
-        The maid turned pale and quickly ran out.
-
-      </div>
-
-    </div>
-
-
-    <!-- =========================
-         PARAGRAPH 2
-    ========================== -->
-
-    <div class="paragraph-card">
-
-      <div class="paragraph-header">
-
-        <span>第二段</span>
-
-        <button
-          class="paragraph-btn"
-          onclick="readParagraph(1)">
-
-          🔊 听这一段
-
-        </button>
-
-      </div>
-
-
-      <p class="passage">
-
-        不一会儿，女佣端了一碗热牛奶，
-        匆匆穿过客厅，把牛奶放在了阳台上。
-        客人们都觉得奇怪，可是女主人仍然有说有笑。
-        又过了一会儿，女佣把阳台的门紧紧关住，
-        大声地吐了一口气。
-        女主人说：“好了，现在大家都安全了。”
-
-      </p>
-
-
-      <div
-        class="translation"
-        id="translation1">
-
-        <strong>English:</strong>
-
-        After a short while, the maid carried a bowl of hot milk
-        through the living room and placed it on the balcony.
-        The guests thought it was strange, but the hostess continued
-        chatting and smiling.
-        A little later, the maid closed the balcony door tightly
-        and let out a loud sigh of relief.
-        The hostess said, “Good. Everyone is safe now.”
-
-      </div>
-
-    </div>
-
-
-    <!-- =========================
-         PARAGRAPH 3
-    ========================== -->
-
-    <div class="paragraph-card">
-
-      <div class="paragraph-header">
-
-        <span>第三段</span>
-
-        <button
-          class="paragraph-btn"
-          onclick="readParagraph(2)">
-
-          🔊 听这一段
-
-        </button>
-
-      </div>
-
-
-      <p class="passage">
-
-        客人们问女主人到底是怎么回事。
-        她说：“刚才我们桌子底下有一条眼镜蛇，
-        不过，我现在已经把它关在门外了。”
-
-      </p>
-
-
-      <div
-        class="translation"
-        id="translation2">
-
-        <strong>English:</strong>
-
-        The guests asked the hostess what had happened.
-        She said, “There was a cobra under our table just now,
-        but I have already shut it outside the door.”
-
-      </div>
-
-    </div>
-
-
-    <!-- =========================
-         PARAGRAPH 4
-    ========================== -->
-
-    <div class="paragraph-card">
-
-      <div class="paragraph-header">
-
-        <span>第四段</span>
-
-        <button
-          class="paragraph-btn"
-          onclick="readParagraph(3)">
-
-          🔊 听这一段
-
-        </button>
-
-      </div>
-
-
-      <p class="passage">
-
-        客人们都吓了一跳。
-        女主人说：“眼镜蛇来的时候，
-        我不敢惊动它，也不敢告诉你们，
-        只好假装没有事。
-        因为眼镜蛇最喜欢喝牛奶，
-        所以我让女佣把一碗热牛奶放在阳台上。
-        它一闻到牛奶味，就会跟去。
-        女佣看见眼镜蛇到阳台上去喝牛奶了，
-        就马上把门关起来了。”
-
-      </p>
-
-
-      <div
-        class="translation"
-        id="translation3">
-
-        <strong>English:</strong>
-
-        The guests were very frightened.
-
-        The hostess said,
-        “When the cobra came, I did not dare to disturb it
-        or tell you about it, so I pretended that nothing was wrong.
-
-        Because cobras like drinking milk,
-        I asked the maid to put a bowl of hot milk on the balcony.
-
-        When it smelled the milk, it followed the smell.
-
-        When the maid saw the cobra go to the balcony to drink the milk,
-        she immediately closed the door.”
-
-      </div>
-
-    </div>
-
-
-    <!-- =========================
-         PARAGRAPH 5
-    ========================== -->
-
-    <div class="paragraph-card">
-
-      <div class="paragraph-header">
-
-        <span>第五段</span>
-
-        <button
-          class="paragraph-btn"
-          onclick="readParagraph(4)">
-
-          🔊 听这一段
-
-        </button>
-
-      </div>
-
-
-      <p class="passage">
-
-        一位客人说：
-        “你怎么知道眼镜蛇就在我们桌子底下的？”
-
-        她说：
-        “我能不知道吗？
-        眼镜蛇就盘在我的脚上呀！”
-
-      </p>
-
-
-      <div
-        class="translation"
-        id="translation4">
-
-        <strong>English:</strong>
-
-        One guest asked,
-        “How did you know that the cobra was under our table?”
-
-        She replied,
-        “How could I not know?
-        The cobra was coiled around my foot!”
-
-      </div>
-
-    </div>
-
-
-    <!-- =========================
-         PARAGRAPH 6
-    ========================== -->
-
-    <div class="paragraph-card">
-
-      <div class="paragraph-header">
-
-        <span>第六段</span>
-
-        <button
-          class="paragraph-btn"
-          onclick="readParagraph(5)">
-
-          🔊 听这一段
-
-        </button>
-
-      </div>
-
-
-      <p class="passage">
-
-        另一位客人说：
-        “你为什么不喊我们帮忙呢？”
-
-        她说：
-        “我一喊，你们必定会慌乱起来。
-        大家一动，蛇受了惊，
-        只要咬一口，我的命就完了。”
-
-      </p>
-
-
-      <div
-        class="translation"
-        id="translation5">
-
-        <strong>English:</strong>
-
-        Another guest asked,
-        “Why didn't you call us for help?”
-
-        She said,
-        “If I had shouted, you would certainly have panicked.
-        If everyone moved, the snake might have been startled.
-        If it bit me even once, I could have died.”
-
-      </div>
-
-    </div>
-
-  </section>
-
-
-  <!-- =========================
-       WORD BANK
-  ========================== -->
-
-  <section
-    id="wordBank"
-    class="word-bank-section">
-
-    <h2>📚 Word Bank</h2>
-
-    <p class="word-bank-intro">
-
-      点击词语，可以听读音、看拼音和英文解释。
-
-    </p>
-
-
-    <div class="word-grid">
-
-
-      <!-- 眼镜蛇 -->
-
-      <button
-        class="word-card"
-        onclick="showWord(
-          '眼镜蛇',
-          'yǎn jìng shé',
-          'cobra'
-        )">
-
-        <strong>眼镜蛇</strong>
-        <span>yǎn jìng shé</span>
-
-      </button>
-
-
-      <!-- 阳台 -->
-
-      <button
-        class="word-card"
-        onclick="showWord(
-          '阳台',
-          'yáng tái',
-          'balcony'
-        )">
-
-        <strong>阳台</strong>
-        <span>yáng tái</span>
-
-      </button>
-
-
-      <!-- 女佣 -->
-
-      <button
-        class="word-card"
-        onclick="showWord(
-          '女佣',
-          'nǚ yōng',
-          'maid / domestic helper'
-        )">
-
-        <strong>女佣</strong>
-        <span>nǚ yōng</span>
-
-      </button>
-
-
-      <!-- 吩咐 -->
-
-      <button
-        class="word-card"
-        onclick="showWord(
-          '吩咐',
-          'fēn fù',
-          'to instruct / to tell someone to do something'
-        )">
-
-        <strong>吩咐</strong>
-        <span>fēn fù</span>
-
-      </button>
-
-
-      <!-- 端 -->
-
-      <button
-        class="word-card"
-        onclick="showWord(
-          '端',
-          'duān',
-          'to carry / to bring'
-        )">
-
-        <strong>端</strong>
-        <span>duān</span>
-
-      </button>
-
-
-      <!-- 慌乱 -->
-
-      <button
-        class="word-card"
-        onclick="showWord(
-          '慌乱',
-          'huāng luàn',
-          'panic / confusion'
-        )">
-
-        <strong>慌乱</strong>
-        <span>huāng luàn</span>
-
-      </button>
-
-
-      <!-- 受惊 -->
-
-      <button
-        class="word-card"
-        onclick="showWord(
-          '受惊',
-          'shòu jīng',
-          'to be frightened / startled'
-        )">
-
-        <strong>受惊</strong>
-        <span>shòu jīng</span>
-
-      </button>
-
-
-      <!-- 盘在脚上 -->
-
-      <button
-        class="word-card"
-        onclick="showWord(
-          '盘在脚上',
-          'pán zài jiǎo shàng',
-          'coiled around one’s foot'
-        )">
-
-        <strong>盘在脚上</strong>
-        <span>pán zài jiǎo shàng</span>
-
-      </button>
-
-
-    </div>
-
-
-    <!-- Word information appears here -->
-
-    <div
-      id="wordDisplay"
-      class="word-display">
-
-    </div>
-
-  </section>
-
-
-  <!-- =========================
-       CHECK MY UNDERSTANDING
-  ========================== -->
-
-  <section class="questions-section">
-
-    <h2>✅ Check My Understanding</h2>
-
-    <p class="question-instruction">
-
-      每一道题有 <strong>两次尝试机会</strong>。
-      如果第一次答错了，请根据 Hint 回到文章寻找证据，再尝试一次。
-
-    </p>
-
-
-    <!-- =========================
-         QUESTION 1
-    ========================== -->
-
-    <div
-      class="question-card"
-      id="question1">
-
-      <div class="question-title">
-
-        <strong>
-          Q1. 女主人为什么让女佣把热牛奶放在阳台？
-        </strong>
-
-      </div>
-
-
-      <label>
-        <input
-          type="radio"
-          name="q26"
-          value="A">
-
-        A. 请客人喝
-
-      </label>
-
-
-      <label>
-        <input
-          type="radio"
-          name="q26"
-          value="B">
-
-        B. 给女佣喝
-
-      </label>
-
-
-      <label>
-        <input
-          type="radio"
-          name="q26"
-          value="C">
-
-        C. 引眼镜蛇到阳台
-
-      </label>
-
-
-      <label>
-        <input
-          type="radio"
-          name="q26"
-          value="D">
-
-        D. 女主人喜欢喝牛奶
-
-      </label>
-
-
-      <div
-        id="feedback-q1"
-        class="question-feedback">
-
-      </div>
-
-    </div>
-
-
-    <!-- =========================
-         QUESTION 2
-    ========================== -->
-
-    <div
-      class="question-card"
-      id="question2">
-
-      <div class="question-title">
-
-        <strong>
-          Q2. 女佣为什么把阳台的门关起来？
-        </strong>
-
-      </div>
-
-
-      <label>
-
-        <input
-          type="radio"
-          name="q27"
-          value="A">
-
-        A. 怕客人出去
-
-      </label>
-
-
-      <label>
-
-        <input
-          type="radio"
-          name="q27"
-          value="B">
-
-        B. 眼镜蛇到了阳台
-
-      </label>
-
-
-      <label>
-
-        <input
-          type="radio"
-          name="q27"
-          value="C">
-
-        C. 天气很冷
-
-      </label>
-
-
-      <label>
-
-        <input
-          type="radio"
-          name="q27"
-          value="D">
-
-        D. 女主人吩咐她关门
-
-      </label>
-
-
-      <div
-        id="feedback-q2"
-        class="question-feedback">
-
-      </div>
-
-    </div>
-
-
-    <!-- =========================
-         QUESTION 3
-    ========================== -->
-
-    <div
-      class="question-card"
-      id="question3">
-
-      <div class="question-title">
-
-        <strong>
-          Q3. 女主人为什么没有告诉客人桌子底下有眼镜蛇？
-        </strong>
-
-      </div>
-
-
-      <label>
-
-        <input
-          type="radio"
-          name="q28"
-          value="A">
-
-        A. 她不知道
-
-      </label>
-
-
-      <label>
-
-        <input
-          type="radio"
-          name="q28"
-          value="B">
-
-        B. 怕大家慌乱，蛇会咬人
-
-      </label>
-
-
-      <label>
-
-        <input
-          type="radio"
-          name="q28"
-          value="C">
-
-        C. 她不喜欢客人
-
-      </label>
-
-
-      <label>
-
-        <input
-          type="radio"
-          name="q28"
-          value="D">
-
-        D. 她想开玩笑
-
-      </label>
-
-
-      <div
-        id="feedback-q3"
-        class="question-feedback">
-
-      </div>
-
-    </div>
-
-
-    <!-- =========================
-         CHECK ANSWERS
-    ========================== -->
-
-    <button
-      id="checkAnswersBtn"
-      class="primary-btn">
-
-      ✅ 检查答案
-
-    </button>
-
-
-    <div
-      id="feedback"
-      class="feedback">
-
-    </div>
-
-  </section>
-
-
-  <!-- =========================
-       END
-  ========================== -->
-
-  <section class="completion-box">
-
-    <h2>🌱 Keep Learning!</h2>
-
-    <p>
-      遇到困难时，先停下来，寻找证据，再想一想：
-      <strong>我可以怎样回应？</strong>
-    </p>
-
-  </section>
-
+<div class="translation" id="translation0">
+<strong>English:</strong><br>
+One day, a lady invited some guests to her home.
+Everyone sat around the table, eating, drinking and chatting.
+Suddenly, the hostess called her maid and whispered a few words to her.
+The maid turned pale and quickly ran out.
+</div>
 
 </div>
 
 
-<!-- =========================
-     JAVASCRIPT
-========================== -->
+<!-- Paragraph 2 -->
 
-<script src="script.js"></script>
+<div class="paragraph-card">
+
+<div class="paragraph-header">
+<span>第二段</span>
+
+<button class="paragraph-btn" onclick="readParagraph(1)">
+🔊 听这一段
+</button>
+</div>
+
+<p class="passage">
+不一会儿，女佣端了一碗热牛奶，匆匆穿过客厅，
+把牛奶放在了阳台上。
+客人们都觉得奇怪，可是女主人仍然有说有笑。
+又过了一会儿，女佣把阳台的门紧紧关住，
+大声地吐了一口气。
+女主人说：“好了，现在大家都安全了。”
+</p>
+
+<div class="translation" id="translation1">
+<strong>English:</strong><br>
+After a short while, the maid carried a bowl of hot milk through
+the living room and placed it on the balcony.
+The guests thought it was strange, but the hostess continued chatting
+and smiling.
+A little later, the maid closed the balcony door tightly
+and let out a loud sigh of relief.
+The hostess said, “Good. Everyone is safe now.”
+</div>
+
+</div>
+
+
+<!-- Paragraph 3 -->
+
+<div class="paragraph-card">
+
+<div class="paragraph-header">
+<span>第三段</span>
+
+<button class="paragraph-btn" onclick="readParagraph(2)">
+🔊 听这一段
+</button>
+</div>
+
+<p class="passage">
+客人们问女主人到底是怎么回事。
+她说：“刚才我们桌子底下有一条眼镜蛇，
+不过，我现在已经把它关在门外了。”
+</p>
+
+<div class="translation" id="translation2">
+<strong>English:</strong><br>
+The guests asked the hostess what had happened.
+She said, “There was a cobra under our table just now,
+but I have already shut it outside the door.”
+</div>
+
+</div>
+
+
+<!-- Paragraph 4 -->
+
+<div class="paragraph-card">
+
+<div class="paragraph-header">
+<span>第四段</span>
+
+<button class="paragraph-btn" onclick="readParagraph(3)">
+🔊 听这一段
+</button>
+</div>
+
+<p class="passage">
+客人们都吓了一跳。
+女主人说：“眼镜蛇来的时候，我不敢惊动它，
+也不敢告诉你们，只好假装没有事。
+因为眼镜蛇最喜欢喝牛奶，
+所以我让女佣把一碗热牛奶放在阳台上。
+它一闻到牛奶味，就会跟去。
+女佣看见眼镜蛇到阳台上去喝牛奶了，
+就马上把门关起来了。”
+</p>
+
+<div class="translation" id="translation3">
+<strong>English:</strong><br>
+The guests were very frightened.
+The hostess said, “When the cobra came,
+I did not dare to disturb it or tell you about it,
+so I pretended that nothing was wrong.
+Because cobras like drinking milk,
+I asked the maid to put a bowl of hot milk on the balcony.
+When it smelled the milk, it followed the smell.
+When the maid saw the cobra go to the balcony to drink the milk,
+she immediately closed the door.”
+</div>
+
+</div>
+
+
+<!-- Paragraph 5 -->
+
+<div class="paragraph-card">
+
+<div class="paragraph-header">
+<span>第五段</span>
+
+<button class="paragraph-btn" onclick="readParagraph(4)">
+🔊 听这一段
+</button>
+</div>
+
+<p class="passage">
+一位客人说：“你怎么知道眼镜蛇就在我们桌子底下的？”
+她说：“我能不知道吗？眼镜蛇就盘在我的脚上呀！”
+</p>
+
+<div class="translation" id="translation4">
+<strong>English:</strong><br>
+One guest asked, “How did you know that the cobra was
+under our table?”
+She replied, “How could I not know?
+The cobra was coiled around my foot!”
+</div>
+
+</div>
+
+
+<!-- Paragraph 6 -->
+
+<div class="paragraph-card">
+
+<div class="paragraph-header">
+<span>第六段</span>
+
+<button class="paragraph-btn" onclick="readParagraph(5)">
+🔊 听这一段
+</button>
+</div>
+
+<p class="passage">
+另一位客人说：“你为什么不喊我们帮忙呢？”
+她说：“我一喊，你们必定会慌乱起来。
+大家一动，蛇受了惊，只要咬一口，我的命就完了。”
+</p>
+
+<div class="translation" id="translation5">
+<strong>English:</strong><br>
+Another guest asked, “Why didn't you call us for help?”
+She said, “If I had shouted, you would certainly have panicked.
+If everyone moved, the snake might have been startled.
+If it bit me even once, I could have died.”
+</div>
+
+</div>
+
+</section>
+
+
+<!-- =========================
+     WORD BANK
+========================= -->
+
+<section class="word-bank-section">
+
+<h2>📚 Word Bank</h2>
+
+<p>
+点击词语，可以听读音、看拼音和英文解释。
+</p>
+
+<div class="word-grid">
+
+<button class="word-card"
+onclick="showWord('眼镜蛇','yǎn jìng shé','cobra')">
+<strong>眼镜蛇</strong>
+<span>yǎn jìng shé</span>
+</button>
+
+<button class="word-card"
+onclick="showWord('阳台','yáng tái','balcony')">
+<strong>阳台</strong>
+<span>yáng tái</span>
+</button>
+
+<button class="word-card"
+onclick="showWord('女佣','nǚ yōng','maid / domestic helper')">
+<strong>女佣</strong>
+<span>nǚ yōng</span>
+</button>
+
+<button class="word-card"
+onclick="showWord('吩咐','fēn fù','to instruct / tell someone to do something')">
+<strong>吩咐</strong>
+<span>fēn fù</span>
+</button>
+
+<button class="word-card"
+onclick="showWord('端','duān','to carry / bring')">
+<strong>端</strong>
+<span>duān</span>
+</button>
+
+<button class="word-card"
+onclick="showWord('慌乱','huāng luàn','panic / confusion')">
+<strong>慌乱</strong>
+<span>huāng luàn</span>
+</button>
+
+<button class="word-card"
+onclick="showWord('受惊','shòu jīng','to be frightened / startled')">
+<strong>受惊</strong>
+<span>shòu jīng</span>
+</button>
+
+<button class="word-card"
+onclick="showWord('盘在脚上','pán zài jiǎo shàng','coiled around one’s foot')">
+<strong>盘在脚上</strong>
+<span>pán zài jiǎo shàng</span>
+</button>
+
+</div>
+
+<div id="wordDisplay" class="word-display"></div>
+
+</section>
+
+
+<!-- =========================
+     CHECK MY UNDERSTANDING
+========================= -->
+
+<section>
+
+<h2>✅ Check My Understanding</h2>
+
+<p>
+每一道题都有两次尝试机会。<br>
+先听题目，再选择你的答案。
+</p>
+
+
+<!-- Q1 -->
+
+<div class="question-card" id="questionCard1">
+
+<div class="question-title">
+Q1. 女主人为什么让女佣把热牛奶放在阳台？
+</div>
+
+<button class="question-btn"
+onclick="speakQuestion(1)">
+🔊 听题目 / Listen
+</button>
+
+<div class="english-box" id="english1">
+<strong>English:</strong><br>
+Why did the hostess ask the maid to put the hot milk on the balcony?
+</div>
+
+<div class="question-options">
+
+<label>
+<input type="radio" name="q1" value="A">
+A. 请客人喝
+</label>
+
+<label>
+<input type="radio" name="q1" value="B">
+B. 给女佣喝
+</label>
+
+<label>
+<input type="radio" name="q1" value="C">
+C. 引眼镜蛇到阳台
+</label>
+
+<label>
+<input type="radio" name="q1" value="D">
+D. 女主人喜欢喝牛奶
+</label>
+
+</div>
+
+<button class="submit-btn"
+onclick="checkQuestion(1)">
+提交 Q1 答案
+</button>
+
+<div class="attempt-status" id="attempt1">
+尝试次数：0 / 2
+</div>
+
+<div class="feedback" id="feedback1"></div>
+
+</div>
+
+
+<!-- Q2 -->
+
+<div class="question-card" id="questionCard2">
+
+<div class="question-title">
+Q2. 女佣为什么把阳台的门关起来？
+</div>
+
+<button class="question-btn"
+onclick="speakQuestion(2)">
+🔊 听题目 / Listen
+</button>
+
+<div class="english-box" id="english2">
+<strong>English:</strong><br>
+Why did the maid close the balcony door?
+</div>
+
+<div class="question-options">
+
+<label>
+<input type="radio" name="q2" value="A">
+A. 怕客人出去
+</label>
+
+<label>
+<input type="radio" name="q2" value="B">
+B. 眼镜蛇到了阳台
+</label>
+
+<label>
+<input type="radio" name="q2" value="C">
+C. 天气很冷
+</label>
+
+<label>
+<input type="radio" name="q2" value="D">
+D. 女主人吩咐她关门
+</label>
+
+</div>
+
+<button class="submit-btn"
+onclick="checkQuestion(2)">
+提交 Q2 答案
+</button>
+
+<div class="attempt-status" id="attempt2">
+尝试次数：0 / 2
+</div>
+
+<div class="feedback" id="feedback2"></div>
+
+</div>
+
+
+<!-- Q3 -->
+
+<div class="question-card" id="questionCard3">
+
+<div class="question-title">
+Q3. 女主人为什么没有告诉客人桌子底下有眼镜蛇？
+</div>
+
+<button class="question-btn"
+onclick="speakQuestion(3)">
+🔊 听题目 / Listen
+</button>
+
+<div class="english-box" id="english3">
+<strong>English:</strong><br>
+Why didn't the hostess tell the guests that there was
+a cobra under the table?
+</div>
+
+<div class="question-options">
+
+<label>
+<input type="radio" name="q3" value="A">
+A. 她不知道
+</label>
+
+<label>
+<input type="radio" name="q3" value="B">
+B. 怕大家慌乱，蛇会咬人
+</label>
+
+<label>
+<input type="radio" name="q3" value="C">
+C. 她不喜欢客人
+</label>
+
+<label>
+<input type="radio" name="q3" value="D">
+D. 她想开玩笑
+</label>
+
+</div>
+
+<button class="submit-btn"
+onclick="checkQuestion(3)">
+提交 Q3 答案
+</button>
+
+<div class="attempt-status" id="attempt3">
+尝试次数：0 / 2
+</div>
+
+<div class="feedback" id="feedback3"></div>
+
+</div>
+
+</section>
+
+</div>
+
+
+<script>
+
+/* ==========================================
+   PASSAGE READING
+========================================== */
+
+const paragraphs = [
+`一天，有一位太太请客。大家围着桌子坐着，一面吃喝，一面说笑。忽然女主人把女佣叫来，低声吩咐了几句话。女佣听了脸色发白，急忙跑了出去。`,
+
+`不一会儿，女佣端了一碗热牛奶，匆匆穿过客厅，把牛奶放在了阳台上。客人们都觉得奇怪，可是女主人仍然有说有笑。又过了一会儿，女佣把阳台的门紧紧关住，大声地吐了一口气。女主人说：“好了，现在大家都安全了。”`,
+
+`客人们问女主人到底是怎么回事。她说：“刚才我们桌子底下有一条眼镜蛇，不过，我现在已经把它关在门外了。”`,
+
+`客人们都吓了一跳。女主人说：“眼镜蛇来的时候，我不敢惊动它，也不敢告诉你们，只好假装没有事。因为眼镜蛇最喜欢喝牛奶，所以我让女佣把一碗热牛奶放在阳台上。它一闻到牛奶味，就会跟去。女佣看见眼镜蛇到阳台上去喝牛奶了，就马上把门关起来了。”`,
+
+`一位客人说：“你怎么知道眼镜蛇就在我们桌子底下的？”她说：“我能不知道吗？眼镜蛇就盘在我的脚上呀！”`,
+
+`另一位客人说：“你为什么不喊我们帮忙呢？”她说：“我一喊，你们必定会慌乱起来。大家一动，蛇受了惊，只要咬一口，我的命就完了。”`
+];
+
+
+function speakChinese(text) {
+
+  speechSynthesis.cancel();
+
+  const speech = new SpeechSynthesisUtterance(text);
+
+  speech.lang = "zh-CN";
+  speech.rate = 0.85;
+  speech.pitch = 1;
+
+  speechSynthesis.speak(speech);
+}
+
+
+function readParagraph(index) {
+
+  speakChinese(paragraphs[index]);
+
+  const translation =
+    document.getElementById("translation" + index);
+
+  translation.style.display = "block";
+}
+
+
+document.getElementById("readAllBtn").addEventListener("click", function() {
+
+  speechSynthesis.cancel();
+
+  const fullText = paragraphs.join(" ");
+
+  speakChinese(fullText);
+
+  document.getElementById("readingStatus").textContent =
+    "🔊 正在朗读全文……";
+
+});
+
+
+/* ==========================================
+   WORD BANK
+========================================== */
+
+function showWord(chinese, pinyin, english) {
+
+  speakChinese(chinese);
+
+  const display =
+    document.getElementById("wordDisplay");
+
+  display.style.display = "block";
+
+  display.innerHTML = `
+    <strong style="font-size:26px;">${chinese}</strong>
+    <br>
+    <span style="font-size:20px;">${pinyin}</span>
+    <br><br>
+    <strong>English:</strong> ${english}
+  `;
+}
+
+
+/* ==========================================
+   QUESTION READING
+========================================== */
+
+const questionText = {
+
+  1: {
+    chinese:
+      "女主人为什么让女佣把热牛奶放在阳台？",
+
+    english:
+      "Why did the hostess ask the maid to put the hot milk on the balcony?"
+  },
+
+  2: {
+    chinese:
+      "女佣为什么把阳台的门关起来？",
+
+    english:
+      "Why did the maid close the balcony door?"
+  },
+
+  3: {
+    chinese:
+      "女主人为什么没有告诉客人桌子底下有眼镜蛇？",
+
+    english:
+      "Why didn't the hostess tell the guests that there was a cobra under the table?"
+  }
+
+};
+
+
+function speakQuestion(number) {
+
+  const q = questionText[number];
+
+  speakChinese(q.chinese);
+
+  const englishBox =
+    document.getElementById("english" + number);
+
+  englishBox.style.display = "block";
+}
+
+
+/* ==========================================
+   QUESTION ANSWERS
+========================================== */
+
+const questionData = {
+
+  1: {
+    answer: "C",
+
+    hint:
+      "💡 Hint：请回到第二段，看看女佣把热牛奶放在哪里。为什么要把牛奶放在那里？",
+
+    final:
+      "正确答案是 C：引眼镜蛇到阳台。第二段和第四段告诉我们，女主人利用牛奶的味道把眼镜蛇引到阳台。"
+  },
+
+  2: {
+    answer: "B",
+
+    hint:
+      "💡 Hint：请回到第二段和第四段，看看女佣什么时候把阳台的门关起来。",
+
+    final:
+      "正确答案是 B：眼镜蛇到了阳台。女佣看到眼镜蛇到阳台喝牛奶后，就马上把门关起来。"
+  },
+
+  3: {
+    answer: "B",
+
+    hint:
+      "💡 Hint：请回到第六段，看看女主人为什么担心大家一起行动。",
+
+    final:
+      "正确答案是 B：怕大家慌乱，蛇会咬人。女主人担心大家一动，蛇受到惊吓，就可能咬人。"
+  }
+
+};
+
+
+/* 每题自己的尝试次数 */
+
+const attempts = {
+  1: 0,
+  2: 0,
+  3: 0
+};
+
+
+const completed = {
+  1: false,
+  2: false,
+  3: false
+};
+
+
+function checkQuestion(number) {
+
+  if (completed[number]) {
+    return;
+  }
+
+  const selected =
+    document.querySelector(
+      `input[name="q${number}"]:checked`
+    );
+
+  const feedback =
+    document.getElementById("feedback" + number);
+
+  const attemptStatus =
+    document.getElementById("attempt" + number);
+
+
+  /* 没有选择答案 */
+
+  if (!selected) {
+
+    feedback.className = "feedback hint";
+
+    feedback.innerHTML =
+      "💡 请先选择一个答案，再提交。";
+
+    speakChinese("请先选择一个答案，再提交。");
+
+    return;
+  }
+
+
+  attempts[number]++;
+
+  attemptStatus.textContent =
+    `尝试次数：${attempts[number]} / 2`;
+
+
+  /* =====================================
+     CORRECT
+  ===================================== */
+
+  if (selected.value === questionData[number].answer) {
+
+    feedback.className = "feedback correct";
+
+    feedback.innerHTML =
+      "✅ <strong>很好！答对了！</strong>";
+
+    speakChinese("很好！答对了！");
+
+    completed[number] = true;
+
+    document
+      .getElementById("questionCard" + number)
+      .classList.add("completed");
+
+    /* Disable options */
+
+    document
+      .querySelectorAll(
+        `input[name="q${number}"]`
+      )
+      .forEach(input => {
+        input.disabled = true;
+      });
+
+    return;
+  }
+
+
+  /* =====================================
+     WRONG – FIRST ATTEMPT
+  ===================================== */
+
+  if (attempts[number] === 1) {
+
+    feedback.className = "feedback hint";
+
+    feedback.innerHTML = `
+      ❌ <strong>答错了，再试一下！</strong>
+      <br><br>
+      ${questionData[number].hint}
+    `;
+
+    speakChinese("答错了，再试一下。");
+
+    return;
+  }
+
+
+  /* =====================================
+     WRONG – SECOND ATTEMPT
+  ===================================== */
+
+  if (attempts[number] === 2) {
+
+    feedback.className = "feedback final";
+
+    feedback.innerHTML = `
+      ❌ <strong>这一次还是不对。</strong>
+      <br><br>
+      ${questionData[number].final}
+    `;
+
+    speakChinese(
+      "这一次还是不对。" +
+      questionData[number].final
+    );
+
+    completed[number] = true;
+
+    document
+      .getElementById("questionCard" + number)
+      .classList.add("completed");
+
+    /* Disable options */
+
+    document
+      .querySelectorAll(
+        `input[name="q${number}"]`
+      )
+      .forEach(input => {
+        input.disabled = true;
+      });
+
+  }
+
+}
+
+</script>
 
 </body>
-
 </html>
